@@ -49,12 +49,14 @@ const gameOver = (status) => {if (status === 'win')
 {startButton.innerHTML = "You win! Play again?";}
 else {
   startButton.innerHTML = "Game over! Play again?";
-}}
+}
+currentlyPlaying=false;}
 
 
 const playDoor = (door) => {numClosedDoors-=1;
 if (numClosedDoors == 0){
 gameOver('win');
+currentlyPlaying = false;
 }
 else if (isBot(door)) {
   gameOver('lose');
@@ -83,7 +85,7 @@ doorImage3.onclick = () => {
   }
 }
 
-if (!currentlyPlaying) {
+if (currentlyPlaying) {
 startButton.onclick = () =>{startRound();}
 }
 
