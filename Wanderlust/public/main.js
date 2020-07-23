@@ -1,10 +1,10 @@
 // Foursquare API Info
-const clientId = '<ADD ME>';
-const clientSecret = '<ADD ME>';
+const clientId = 'U4B2NYZDQAZIV12VKGBBXQLJECEA25RSL2MLDJNPPR14PXF1';
+const clientSecret = 'FD2JWDZ5V5YVU5OOYS4WOPNHAYYZXGZVOXNGLH4CIAML1S0P';
 const url = 'https://api.foursquare.com/v2/venues/explore?near=';
 
 // OpenWeather Info
-const openWeatherKey = '<ADD ME>';
+const openWeatherKey = '1345198d8b35197b5d23d018f6acf6d2';
 const weatherUrl = 'https://api.openweathermap.org/data/2.5/weather';
 
 // Page Elements
@@ -47,25 +47,22 @@ const getForecast = async () => {
 
 }
 
-const getVenuePhotos = async (venues) => {
-  const photoSrcs = [];
-  for (var i = 0; i < venues.length; i++) {
-    let venue = venues[i];
-    let venueId = venue.id;
-    const urlToFetch = 'https://api.foursquare.com/v2/venues/' + venueId + '&client_id=' + clientId + '&client_secret=' + clientSecret;
+const getVenuePhotos = async (venueId) => {
+  const urlToFetch = 'https://api.foursquare.com/v2/venues/' + venueId + '&client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20200720'
+  console.log(urlToFetch)
     try {
       const response = await fetch(urlToFetch);
       if (respsone.ok) {
         const jsonResponse = await response.json();
-        photoSrcs.push(jsonResponse.bestPhoto);
+        console.log(jsonResponse);
+        return jsonResponse.bestPhoto;
       }
     } catch(error) {
+      console.log('error:');
       console.log(error);
     }
   }
-  return photoSrcs
- 
-}
+
 
 
 // Render functions
@@ -74,7 +71,9 @@ const renderVenues = (venues) => {
     // Add your code here:
     const venue = venues[index];
     const venueIcon = venue.categories[0].icon;
-    const venueImageSrc = venueIcon.prefix + 'bg_64' + venueIcon.suffix;
+    const venueImage = getVenuePhotos(venue.id)
+    const venueImageSrc = venueImage.prefix + 'width100' + venueImage.suffix;
+    console.log(venueImageSrc)
     let venueContent = createVenueHTML(venue.name, venue.location, venueImageSrc);
     $venue.append(venueContent);
   });
@@ -96,7 +95,7 @@ const executeSearch = () => {
   $destination.empty();
   $container.css("visibility", "visible");
   getVenues().then((venues) => renderVenues(venues));
-  console.log(getVenuePhotos(venues));
+
   getForecast().then(forcast => renderForecast(forcast));
   return false;
 }
