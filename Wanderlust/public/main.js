@@ -1,12 +1,11 @@
 // Foursquare API Info
-const clientId = '<ID>';
-const clientSecret = '<SECRET>';
+const clientId = 'U4B2NYZDQAZIV12VKGBBXQLJECEA25RSL2MLDJNPPR14PXF1';
+const clientSecret = 'FD2JWDZ5V5YVU5OOYS4WOPNHAYYZXGZVOXNGLH4CIAML1S0P';
 const url = 'https://api.foursquare.com/v2/venues/explore?near=';
 
 // OpenWeather Info
-const openWeatherKey = '<KEY>';
+const openWeatherKey = '1345198d8b35197b5d23d018f6acf6d2';
 const weatherUrl = 'https://api.openweathermap.org/data/2.5/weather';
-
 
 // Page Elements
 const $input = $('#city');
@@ -48,13 +47,13 @@ const getForecast = async () => {
 
 }
 
-const getVenuePhotos = async (venueId) => {
+const getVenuePhoto = async (venueId) => {
   const urlToFetch = 'https://api.foursquare.com/v2/venues/' + venueId + '?&client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20200720';
     try {
       const response = await fetch(urlToFetch);
       if (response.ok) {
         const jsonResponse = await response.json();
-        return jsonResponse.bestPhoto;
+        return jsonResponse;
       }
     } catch(error) {
       console.log(error);
@@ -72,9 +71,12 @@ const renderVenues = (venues) => {
     // Add your code here:
     const venue = venues[index];
     const venueIcon = venue.categories[0].icon;
-    const img = getVenuePhotos(venue.id).then(venueImage => {return venueImage;})
-    const value = img.then((val) => {return val;})
-    console.log(value)
+    const im = getVenuePhoto(venue.id).then(image => {
+      console.log(image)
+    return image.response.venue.bestPhoto}).then(best => {console.log(2);
+    console.log(best)});
+    
+    
     
     let venueContent = createVenueHTML(venue.name, venue.location, "");
     $venue.append(venueContent);
