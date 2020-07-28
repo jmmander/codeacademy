@@ -72,14 +72,10 @@ const renderVenues = (venues) => {
     const venue = venues[index];
     const venueIcon = venue.categories[0].icon;
     const im = getVenuePhoto(venue.id).then(image => {
-      console.log(image)
-    return image.response.venue.bestPhoto}).then(best => {console.log(2);
-    console.log(best)});
-    
-    
-    
-    let venueContent = createVenueHTML(venue.name, venue.location, "");
-    $venue.append(venueContent);
+    return image.response.venue.bestPhoto}).then(best => { 
+        const imgSrc = best.prefix + 'width300' + best.suffix;
+    let venueContent = createVenueHTML(venue.name, venue.location, imgSrc);
+    $venue.append(venueContent);})
   });
   $destination.append(`<h2>${venues[0].location.city}</h2>`);
 }
