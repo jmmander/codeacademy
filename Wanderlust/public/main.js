@@ -1,6 +1,6 @@
 // Foursquare API Info
 const clientId = 'U4B2NYZDQAZIV12VKGBBXQLJECEA25RSL2MLDJNPPR14PXF1';
-const clientSecret = 'FD2JWDZ5V5YVU5OOYS4WOPNHAYYZXGZVOXNGLH4CIAML1S0P';
+const clientSecret = '5GBTVPFV3VFLM3R230ES3FFHATDCBUDX0IXVHMUIQAWWFGEN';
 const url = 'https://api.foursquare.com/v2/venues/explore?near=';
 
 // OpenWeather Info
@@ -16,7 +16,27 @@ const $venueDivs = [$("#venue1"), $("#venue2"), $("#venue3"), $("#venue4")];
 const $weatherDiv = $("#weather1");
 const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-// Add AJAX functions here:
+//helper functions:
+const createVenueHTML = (name, location, iconSource) => {
+  return `<h2>${name}</h2>
+  <img class="venueimage" src="${iconSource}"/>
+  <h3>Address:</h3>
+  <p>${location.address}</p>
+  <p>${location.city}</p>
+  <p>${location.country}</p>`;
+}
+
+const createWeatherHTML = (currentDay) => {
+  console.log(currentDay)
+  return `<h2>${weekDays[(new Date()).getDay()]}</h2>
+        <h2>Temperature: ${kelvinToFahrenheit(currentDay.main.temp)}&deg;F</h2>
+        <h2>Condition: ${currentDay.weather[0].description}</h2>
+      <img src="https://openweathermap.org/img/wn/${currentDay.weather[0].icon}@2x.png">`;
+}
+
+const kelvinToFahrenheit = k => ((k - 273.15) * 9 / 5 + 32).toFixed(0);
+
+// AJAX functions:
 const getVenues = async () => {
 const city = $input.val();
 const urlToFetch = url + city+'&limit=10' + '&client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20200720';
@@ -68,7 +88,6 @@ function formSrc(venueImage) {
 // Render functions
 const renderVenues = (venues) => {
   $venueDivs.forEach(($venue, index) => {
-    // Add your code here:
     const venue = venues[index];
     const venueIcon = venue.categories[0].icon;
     const im = getVenuePhoto(venue.id).then(image => {
@@ -77,11 +96,16 @@ const renderVenues = (venues) => {
     let venueContent = createVenueHTML(venue.name, venue.location, imgSrc);
     $venue.append(venueContent);})
   });
-  $destination.append(`<h2>${venues[0].location.city}</h2>`);
+  if (venues[0].location.city === undefined){
+    citySearch = $('#city').val();
+    $destination.append(`<h2>${citySearch}</h2>`);
+  } else {
+    $destination.append(`<h2>${venues[0].location.city}</h2>`);
+  }
+  
 }
 
 const renderForecast = (day) => {
-  // Add your code here:
   let weatherContent = createWeatherHTML(day);
   $weatherDiv.append(weatherContent);
 }
